@@ -1,0 +1,31 @@
+.auth-box {
+    position: relative;
+    min-width: 20%;
+    max-width: 450px;
+    background: black;
+    color: white;
+    margin: 12% auto 0;
+    border: 1px solid #eee;
+}
+
+.auth-box .group {
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.auth-box .group input[type='password'], .auth-box .group input[type='text'] {
+    width: 100%;
+    height: 30px;
+}
+
+.auth-box .group > input {
+    margin: 5px;
+}
+
+.auth-box button {
+    width: 100%;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+}

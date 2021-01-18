@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    links:
+      - db
+    depends_on:
+      - migration
+  migration:
+    build: ./backend
+    command: bash -c "python manage.py makemigrations && python manage.py migrate"
+    volumes:
+      - ./backend:/code
+    links:
+      - db
+      - channel_layer
+    depends_on:
+      - db
+      - channel_layer
+  channel_layer:
+    image: redis
