@@ -4,7 +4,8 @@ from django.db import models
 
 # Create your models here.
 class RpgUser(User):
-    pass
+    class Meta:
+        verbose_name = "RpgUser"
 
 
 class DetailObject(models.Model):
@@ -25,6 +26,7 @@ class RoomDetailObject(DetailObject):
 
 
 class Room(models.Model):
+    name = models.CharField(max_length=255)
     master = models.ForeignKey(Master, on_delete=models.CASCADE)
     players = models.ManyToManyField(Player)
     details = models.ManyToManyField(RoomDetailObject)
