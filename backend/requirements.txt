@@ -6,3 +6,4 @@ djangorestframework
 djangorestframework-jwt
 django-cors-headers
 pillow
+uuid

@@ -1,8 +1,9 @@
 import "./LoginForm.css";
 import React from "react";
 import PropTypes from 'prop-types';
+import {Link} from "react-router-dom";
 
-export class LoginFrom extends React.Component {
+export class LoginForm extends React.Component {
     state = {
         username: '',
         password: ''
@@ -39,7 +40,7 @@ export class LoginFrom extends React.Component {
                             />
                             <div className={'flex'}>
                                 <div className={'text-left w-100'}>
-                                    <label onClick={this.props.submit_form}>Registre-se</label>
+                                    <Link to={'/signup'}><label>Registre-se</label></Link>
                                 </div>
                                 <div className={'text-right w-100'}>
                                     <label>Lembre-se de mim</label><input type={'checkbox'}/>
@@ -54,7 +55,6 @@ export class LoginFrom extends React.Component {
     }
 }
 
-LoginFrom.propTypes = {
+LoginForm.propTypes = {
     handle_login: PropTypes.func.isRequired,
-    submit_form: PropTypes.func.isRequired
 }

@@ -7,5 +7,6 @@ urlpatterns = [
     path('login/', obtain_jwt_token),
     path('current_user/', views.current_user),
     path('users/', views.RpgUserList.as_view()),
-    path('get_room/', views.get_rooms)
+    path('get_rooms/', views.RoomList.as_view()),
+    path('teste/', views.teste)
 ]

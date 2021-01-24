@@ -1,24 +1,13 @@
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
-from main.models import RpgUser, Master, Player, Room
+from main.models import RpgUser, Player, Room, Template
 
 
 class RpgUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = RpgUser
-        fields = ('username',)
-
-
-class MasterSerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField(method_name='get_username')
-
-    def get_username(self, rpguser):
-        return rpguser.user.username
-
-    class Meta:
-        model = Master
-        fields = ('username',)
+        fields = ('id', 'username',)
 
 
 class PlayerSerializer(serializers.ModelSerializer):
@@ -29,23 +18,30 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ('username',)
+        fields = ('id', 'username',)
+
+
+class TemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = ('id', 'name', 'data')
 
 
 class RoomSerializer(serializers.ModelSerializer):
     players = PlayerSerializer(many=True, read_only=True)
-    master = MasterSerializer(read_only=True)
+    master = RpgUserSerializer(read_only=True)
+    template = TemplateSerializer(read_only=True)
 
     class Meta:
         model = Room
-        fields = ('name', 'master', 'players')
+        fields = ('id', 'name', 'master', 'players', 'template')
 
 
 class RoomsPlayerSerializer(serializers.ModelSerializer):
     rooms = serializers.SerializerMethodField(method_name='get_rooms')
 
     def get_rooms(self, player):
-        rooms = Room.objects.filter(players=player)
+        rooms = Room.objects.filter(players__in=player)
         return RoomSerializer(many=True, read_only=True, instance=rooms).data
 
     class Meta:

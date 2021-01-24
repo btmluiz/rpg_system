@@ -1,36 +1,51 @@
 import './App.css';
 import React from "react";
-import {LoginFrom} from "./components/Login/LoginFrom";
-import SignupForm from "./components/Signup/SignupForm";
+import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
+import LoginPage from "./routes/Login/LoginPage";
+import backend_url from "./configs";
+import HomePage from "./routes/Home/HomePage";
+import Room from "./components/Room/Room";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            displayed_form: '',
             logged_in: !!localStorage.getItem('token'),
-            username: ''
+            username: '',
+            rooms: []
         }
     }
 
     componentDidMount() {
         if (this.state.logged_in) {
-            fetch('http://localhost:8000/current_user/', {
+            fetch(backend_url + '/current_user/', {
                 headers: {
                     Authorization: `JWT ${localStorage.getItem('token')}`
                 }
             })
-                .then(res => res.json())
-                .then(json => {
-                    this.setState({username: json.username})
+                .then(res => {
+                    console.log(res)
+                    let status = res.status
+                    let json = res.json()
+
+                    if (status === 200)
+                        this.setState({
+                            username: json.username,
+                            logged_in: true
+                        })
+                    else
+                        this.setState({
+                            username: '',
+                            logged_in: false
+                        })
                 })
         }
     }
 
     handle_login = (e, data) => {
         e.preventDefault()
-        fetch('http://localhost:8000/token-auth/', {
+        fetch(backend_url + '/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -42,7 +57,6 @@ class App extends React.Component {
                 localStorage.setItem('token', json.token)
                 this.setState({
                     logged_in: true,
-                    displayed_form: '',
                     username: json.user.username
                 })
             })
@@ -50,7 +64,7 @@ class App extends React.Component {
 
     handle_signup = (e, data) => {
         e.preventDefault()
-        fetch('http://localhost:8000/users/', {
+        fetch(backend_url + '/users/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -80,24 +94,27 @@ class App extends React.Component {
     }
 
     render() {
-        let form
-        switch (this.state.displayed_form) {
-            case "login":
-                form = <LoginFrom handle_login={this.handle_login} submit_form={() => {this.setState({displayed_form: 'signup'})}}/>
-                break;
-            case "signup":
-                form = <SignupForm />
-                break;
-            default:
-                form = null
-        }
-
         return (
             <React.Fragment>
-                {form}
-                {this.state.logged_in
-                    ? `Hello, ${this.state.username}`
-                    : 'Please Log In'}
+                <BrowserRouter>
+                    <Switch>
+                        <Route path={'/login'}>
+                            <LoginPage handle_login={this.handle_login}/>
+                            {this.state.logged_in ? <Redirect to={'/home'}/> : null}
+                        </Route>
+                        <Route path={'/signup'}>
+                            Cadastro
+                            {this.state.logged_in ? <Redirect to={'/Home'}/> : null}
+                        </Route>
+                        <Route path={'/home'}>
+                            <HomePage/>
+                            {!this.state.logged_in ? <Redirect to={'/login'}/> : null}
+                        </Route>
+                        <Route path={'/'}>
+                            Teste
+                        </Route>
+                    </Switch>
+                </BrowserRouter>
             </React.Fragment>
         )
     }

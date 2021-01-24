@@ -1,0 +1,25 @@
+[
+  {
+    "type": "div",
+    "class": [
+      "center",
+      "w-100"
+    ],
+    "content": [
+      {
+        "type": "span",
+        "class": null,
+        "content": [
+          "Teste"
+        ]
+      },
+      {
+        "type": "div",
+        "class": "text-red",
+        "content": [
+          "teste"
+        ]
+      }
+    ]
+  }
+]
