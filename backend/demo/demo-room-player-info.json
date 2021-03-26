@@ -1,0 +1,10 @@
+{
+  "player_name": {
+    "type": "text",
+    "default": ""
+  },
+  "player_age": {
+    "type": "int",
+    "default": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ataque": {
+    "type": "int",
+    "default": 10,
+    "dice": "d6"
+  },
+  "defesa": {
+    "type": "int",
+    "default": 8
+  }
+}

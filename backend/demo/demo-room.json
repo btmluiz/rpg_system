@@ -1,0 +1,45 @@
+{
+  "css": {
+    "block": {
+      "display": "block"
+    }
+  },
+  "template": {
+    "content": [
+      {
+        "type": "div",
+        "class": [
+          "w-25",
+          "center",
+          "red"
+        ],
+        "content": [
+          {
+            "type": "span",
+            "class": [
+              "block",
+              "w-100"
+            ],
+            "content": [
+              "Nome: #id#3_player_info_player_name#"
+            ]
+          },
+          {
+            "type": "span",
+            "class": [
+              "block",
+              "w-100"
+            ],
+            "content": [
+              "Idade: #id#3_player_info_player_age#"
+            ]
+          },
+          {
+            "type": "input",
+            "reference": "id#2_atributos_ataque"
+          }
+        ]
+      }
+    ]
+  }
+}

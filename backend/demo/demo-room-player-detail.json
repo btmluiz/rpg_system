@@ -1,0 +1,10 @@
+{
+  "id#3_player_info": {
+    "player_name": "João",
+    "player_age": "20"
+  },
+  "id#2_atributos": {
+    "ataque": 10,
+    "defesa": 8
+  }
+}

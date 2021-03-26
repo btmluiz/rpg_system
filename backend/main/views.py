@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 from rest_framework_jwt import authentication
 
 from main.models import Room, Player, RpgUser
-from main.serializers import RpgUserSerializer, RpgUserSerializerWithToken, RoomSerializer, RoomsPlayerSerializer
+from main.serializers import RpgUserSerializer, RpgUserSerializerWithToken, RoomSerializer, RoomsPlayerSerializer, \
+    TemplateSerializer
 
 
 def teste(request):
@@ -32,12 +33,19 @@ def get_rooms(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def get_room(request, pk=None):
+    if type(pk) is int:
+        room = Room.objects.get(pk=pk)
+        return JsonResponse(room.room_template.data, safe=False)
+
+
 class RoomList(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.JSONWebTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
-        players = Player.objects.filter(user=request.user.pk)
+        players = Player.objects.filter(user__pk=request.user.pk)
         serializer = RoomsPlayerSerializer(players)
         return Response(serializer.data)
 

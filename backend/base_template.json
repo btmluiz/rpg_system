@@ -1,25 +1,69 @@
-[
-  {
-    "type": "div",
-    "class": [
-      "center",
-      "w-100"
-    ],
+{
+  "css": {
+    "blue": {
+      "color": "blue"
+    }
+  },
+  "template": {
     "content": [
       {
-        "type": "span",
-        "class": null,
-        "content": [
-          "Teste"
-        ]
-      },
-      {
         "type": "div",
-        "class": "text-red",
+        "class": [
+          "center",
+          "w-100",
+          "red"
+        ],
         "content": [
-          "teste"
+          {
+            "type": "span",
+            "content": [
+              "Teste"
+            ]
+          },
+          {
+            "type": "div",
+            "content": [
+              {
+                "from": "attr",
+                "type": "list_object",
+                "content": [
+                  {
+                    "type": "div",
+                    "content": [
+                      "#tag# - #name#"
+                    ]
+                  }
+                ]
+              },{
+                "type": "input",
+                "input_type": "number",
+                "ref": "ref1",
+                "class": []
+              }
+            ]
+          },
+          {
+            "type": "div",
+            "content": [
+              {
+                "from": "attr2",
+                "type": "list_object",
+                "content": [
+                  {
+                    "type": "div",
+                    "class": [
+                      "blue"
+                    ],
+                    "content": [
+                      "#nome# #sobrenome#"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
   }
-]
+}

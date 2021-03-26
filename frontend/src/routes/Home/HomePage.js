@@ -40,14 +40,14 @@ export default class HomePage extends React.Component {
                                     const {id, name} = room
                                     return (
                                         <li key={id}>
-                                            <Link to={`/home/${id}`}>{name}</Link>
+                                            <Link to={`/home/room/${id}`}>{name}</Link>
                                         </li>
                                     )
                                 })}
                             </ul>
                         </div>
                     </Route>
-                    <Route path={`/home/:id`} children={<Room/>}/>
+                    <Route path={`/home/room/:id`} children={<Room/>}/>
                 </BrowserRouter>
             </React.Fragment>
         );

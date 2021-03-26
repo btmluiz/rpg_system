@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
-from main.models import RpgUser, Player, Room, Template
+from main.models import RpgUser, Player, Room, Template, RoomDetailObject, DetailObject
 
 
 class RpgUserSerializer(serializers.ModelSerializer):
@@ -73,3 +73,40 @@ class RpgUserSerializerWithToken(serializers.ModelSerializer):
     class Meta:
         model = RpgUser
         fields = ('token', 'username', 'password')
+
+
+class DetailObjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetailObject
+        fields = ('id', 'data',)
+
+
+class DetailRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomDetailObject
+        fields = ('id', 'name', 'data')
+
+
+class LivePlayerRoomSerializer(serializers.ModelSerializer):
+    details = DetailObjectSerializer(read_only=False)
+
+    class Meta:
+        model = Player
+        fields = ('id', 'details',)
+
+
+class LiveRoomDetailSerializer(serializers.ModelSerializer):
+    master = RpgUserSerializer(read_only=True)
+    details = DetailRoomSerializer(read_only=True, many=True)
+    player = serializers.SerializerMethodField('get_player')
+
+    def __init__(self, user, instance: Room = None, **kwargs):
+        super().__init__(instance=instance, **kwargs)
+        self.player = instance.players.get(user__pk=user)
+
+    def get_player(self, player):
+        return LivePlayerRoomSerializer(instance=self.player).data
+
+    class Meta:
+        model = Room
+        fields = ('id', 'name', 'master', 'details', 'player')

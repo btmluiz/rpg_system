@@ -30,13 +30,13 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'channels',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'main'
 ]
 
@@ -45,7 +45,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [{'channel_layer', 6379}]
+            'hosts': [('channel_layer', 6379)],
         }
     }
 }
