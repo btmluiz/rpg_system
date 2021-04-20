@@ -17,3 +17,12 @@ def validate_token(token: str):
 
 def get_data(serializer):
     return serializer.data
+
+
+def type_cast(value, cast):
+    if cast == 'int':
+        return int(value)
+    elif cast == 'text':
+        return str(value)
+    else:
+        return value

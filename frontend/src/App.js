@@ -4,6 +4,7 @@ import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
 import LoginPage from "./routes/Login/LoginPage";
 import backend_url from "./configs";
 import HomePage from "./routes/Home/HomePage";
+import MainPage from "./components/Main/MainPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -110,7 +111,7 @@ class App extends React.Component {
                             {!this.state.logged_in ? <Redirect to={'/login'}/> : null}
                         </Route>
                         <Route path={'/'}>
-                            Teste
+                            <MainPage/>
                         </Route>
                     </Switch>
                 </BrowserRouter>

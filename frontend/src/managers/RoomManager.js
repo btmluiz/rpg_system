@@ -7,6 +7,7 @@ export default class RoomManager {
         this.room = room
         this.room_id = room_id
         this.connect()
+        this.changeInput = this.changeInput.bind(this)
     }
 
     connect(){
@@ -30,13 +31,13 @@ export default class RoomManager {
     setClientFunctions() {
         console.log(this.client)
         if (this.client !== undefined) {
-            this.client.onopen = () => this.onopen()
+            this.client.onopen = this.onopen.bind(this)
 
-            this.client.onerror = (e) => this.onerror(e)
+            this.client.onerror = this.onerror.bind(this)
 
-            this.client.onmessage = (message) => this.onmessage(message)
+            this.client.onmessage = this.onmessage.bind(this)
 
-            this.client.onclose = () => this.onclose()
+            this.client.onclose = this.onclose.bind(this)
         } else {
             this.lostConnection()
         }
@@ -54,9 +55,9 @@ export default class RoomManager {
 
     onerror(e) {
         console.log(`Websocket error: ${e}`)
-        console.log(`Websocket: trying to reconnect in 1s`)
+        console.log(`Websocket: trying to reconnect in 5s`)
 
-        setTimeout(this.lostConnection, 1000)
+        setTimeout(this.lostConnection.bind(this), 5000)
     }
 
     onmessage(message) {
@@ -83,7 +84,7 @@ export default class RoomManager {
 
     onclose() {
         console.log('WebSocket Client closed!')
-        setTimeout(this.lostConnection, 1000)
+        setTimeout(this.lostConnection.bind(this), 5000)
     }
 
     authorization_response(json) {
@@ -135,18 +136,15 @@ export default class RoomManager {
         })
     }
 
-    changeInput(){
-        const _this = this
-        return (reference, value) => {
-            let msg = {
-                type: "update",
-                data: {
-                    reference: reference,
-                    value: value
-                }
+    changeInput(reference, value){
+        let msg = {
+            type: "update",
+            data: {
+                reference: reference,
+                value: value
             }
-            console.log(msg)
-            _this.client.send(JSON.stringify(msg))
         }
+        console.log(msg)
+        this.client.send(JSON.stringify(msg))
     }
 }

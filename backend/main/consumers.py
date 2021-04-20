@@ -6,7 +6,7 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from main.models import Room
 from main.serializers import LiveRoomDetailSerializer
-from rpg_system.utils import validate_token, get_data
+from rpg_system.utils import validate_token, get_data, type_cast
 
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
@@ -20,7 +20,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
         await self.send_json({
             "type": "info",
-            "data": "You has 5 seconds to send authorization code util the connection be close."
+            "data": "You have 5 seconds to send authorization code util the connection is closed."
         })
 
         self._timout = Timer(5.0, lambda: asyncio.run(self._timeout_connection()))
@@ -36,7 +36,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
         if content['type'] == 'authorization':
-            await self._print("Authorization received:", content['data']['Authorization'])
+            await self._print("Authorization request received")
             await self._manager.authorization(content['data']['Authorization'])
             if self._timout is not None:
                 self._timout.cancel()
@@ -44,6 +44,9 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         elif content['type'] == "setup_room":
             await self._print("Setup room request received")
             await self._manager.setup_room()
+        elif content['type'] == 'update':
+            await self._print("Player update request received")
+            await self._manager.player_update(content['data'])
         else:
             await self._print("Unknown request received", content)
 
@@ -100,7 +103,6 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
                 serializer = await sync_to_async(LiveRoomDetailSerializer)(instance=self._room, user=self._user.pk)
                 data = await sync_to_async(get_data)(serializer)
-                await self._print(data)
                 await self.outer.send_json({
                     "type": "setup_room",
                     "data": data
@@ -108,8 +110,31 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             except Exception as e:
                 raise e
 
+        async def player_update(self, json):
+            details = await sync_to_async(self.get_player_details)()
+
+            reference_split = str(json['reference']).split('_')
+
+            details_reference = "%s_%s" % (reference_split[0], reference_split[1])
+            details_attribute = reference_split[2]
+
+            if details_reference in details.data:
+                if details_attribute in details.data[details_reference]:
+                    room_details = await sync_to_async(self.get_room_details)(reference_split[0].replace('id#', ''))
+                    details.data[details_reference][details_attribute] = type_cast(json['value'],
+                                                                                   room_details.data[details_attribute]
+                                                                                   ['type'])
+                    await sync_to_async(details.save)()
+                    await self._print('Player attribute %s changed' % json['reference'])
+
         async def _print(self, *args, **kwargs):
             await sync_to_async(print)("(Manager) Room - %s:" % self.room_name, *args, **kwargs)
+
+        def get_player_details(self):
+            return self._player.details
+
+        def get_room_details(self, reference):
+            return self._room.details.get(pk=reference)
 
 
 class TestConsumer(AsyncJsonWebsocketConsumer):

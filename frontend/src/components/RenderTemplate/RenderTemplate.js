@@ -66,7 +66,7 @@ export default class RenderTemplate extends React.Component {
                     value = this.props.player_info[cont.reference]
                 }
 
-                onChange = this.props.manager.changeInput()
+                onChange = this.props.manager.changeInput
                 return (
                     <div key={index}>
                         <InputRpg type={type}
